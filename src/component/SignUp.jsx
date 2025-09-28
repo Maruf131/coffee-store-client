@@ -8,13 +8,18 @@ const SignUp = () => {
         e.preventDefault();
         const form = e.target;
         const formData = new FormData(form);
-        const { email, password, ...userProfile } = Object.fromEntries(formData.entries());
-        console.log(email, password, userProfile);
+        const { email, password, ...rest } = Object.fromEntries(formData.entries());
 
         // user signup
         createUser(email, password)
             .then(res => {
                 console.log(res.user);
+                const userProfile ={
+                    email,
+                    ...rest,
+                    creationTime: res.user?.metadata?.creationTime,
+                    lastSignInTime: res.user?.metadata?.lastSignInTime,
+                }
                 // userProfile
                 fetch('http://localhost:3000/users', {
                     method: "POST",
